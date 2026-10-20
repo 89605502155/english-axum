@@ -49,7 +49,12 @@ struct ErrorResponse {
 type ApiError = (StatusCode, Json<ErrorResponse>);
 
 fn api_error(status: StatusCode, msg: &str) -> ApiError {
-    (status, Json(ErrorResponse { error: msg.to_string() }))
+    (
+        status,
+        Json(ErrorResponse {
+            error: msg.to_string(),
+        }),
+    )
 }
 
 fn db_error(e: sqlx::Error) -> ApiError {
@@ -106,8 +111,7 @@ async fn main() {
     path = "/",
     tag = "Start",
     responses(
-        (status = 200, description = "Сервис работает", body = String,
-            content_type = "text/plain", example = "Hello")
+        (status = 200, description = "Сервис работает", body = String, content_type = "text/plain", example = "Hello")
     )
 )]
 async fn root() -> &'static str {
