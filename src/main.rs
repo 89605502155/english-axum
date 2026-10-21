@@ -10,6 +10,9 @@ fn main() {
         title: "sd".to_string(),
         done: false,
     };
+    print_title(&task);
 }
 
-fn print_title(task: )
+fn print_title(task: &Task){
+    println!("{} {} {}", task.id, task.title, task.done)
+}
