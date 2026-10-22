@@ -1,8 +1,12 @@
-use crate::services::user;
-use crate::models::user as user_model;
 use crate::models::error;
-use axum::{extract::{State, Path}, Json, http::StatusCode};
+use crate::models::user as user_model;
+use crate::services::user;
 use crate::state::SessionState;
+use axum::{
+    Json,
+    extract::{Path, State},
+    http::StatusCode,
+};
 
 /// Проверка, что сервис жив
 #[utoipa::path(
@@ -39,7 +43,9 @@ pub async fn root() -> &'static str {
             example = json!({"error": "internal server error"}))
     )
 )]
-pub async fn users_list(State(state): State<SessionState>) -> Result<Json<Vec<user_model::User>>, error::ApiError> {
+pub async fn users_list(
+    State(state): State<SessionState>,
+) -> Result<Json<Vec<user_model::User>>, error::ApiError> {
     user::users_list(state).await
 }
 
@@ -83,6 +89,9 @@ pub async fn create_user(
     delete,
     path = "/users/{id}",
     tag = "Users",
+    security(
+            ("bearer_auth" = [])
+        ),
     params(
         ("id" = i32, Path, description = "Идентификатор пользователя", example = 1)
     ),
