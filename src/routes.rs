@@ -1,6 +1,9 @@
 use crate::handlers::user as handler_user;
+use crate::handlers::check;
+use crate::handlers::auth;
 use crate::models::error;
 use crate::models::user as model_user;
+use crate::models::auth as dto_auth;
 use crate::state::SessionState;
 use axum::{
     Router,
@@ -35,23 +38,25 @@ impl Modify for SecurityAddon {
         description = "API для управления пользователями"
     ),
     modifiers(&SecurityAddon),
-    paths(handler_user::root, handler_user::users_list, handler_user::create_user, handler_user::delete_user),
-    components(schemas(model_user::User, model_user::UserPayLoad, error::ErrorResponse)),
+    paths(check::root, handler_user::users_list, handler_user::create_user, handler_user::delete_user,auth::loging_fn),
+    components(schemas(model_user::User, model_user::UserPayLoad, error::ErrorResponse, dto_auth::LogIn, dto_auth::LogInResponse)),
     tags(
         (name = "Start", description = "Проверка доступности сервиса"),
-        (name = "Users", description = "CRUD операции над пользователями")
+        (name = "Users", description = "CRUD операции над пользователями"),
+        (name = "Auth", description = "авторизация")
     )
 )]
 struct ApiDoc;
 
 pub fn app(state: SessionState) -> Router<()> {
     Router::new()
-        .route("/", get(handler_user::root))
+        .route("/", get(check::root))
         .route(
             "/users",
             get(handler_user::users_list).post(handler_user::create_user),
         )
         .route("/users/{id}", delete(handler_user::delete_user))
+        .route("/auth", post(auth::loging_fn))
         .merge(SwaggerUi::new("/api").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .with_state(state)
 }

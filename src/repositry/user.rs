@@ -38,3 +38,16 @@ pub async fn delete_user(
         .await
         .map_err(db_error)
 }
+
+pub async fn get_by_email(
+    pool: &PgPool,
+    email: &str,
+) -> Result<Option<i32>, ApiError> {
+    sqlx::query_scalar::<_, i32>(
+        "SELECT id FROM users WHERE email = $1 LIMIT 1"
+    )
+    .bind(email)
+    .fetch_optional(pool)
+    .await
+    .map_err(db_error)
+}
