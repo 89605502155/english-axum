@@ -1,19 +1,13 @@
 use crate::models::auth as dto;
 use crate::models::error;
-use crate::models::user as user_model;
-use crate::services::user;
-use crate::state::SessionState;
-use axum::{
-    Json,
-    extract::{Path, State},
-    http::StatusCode,
-};
+use crate::models::error::ApiError;
 use crate::services::auth;
+use crate::state::SessionState;
+use axum::{Json, extract::State, http::StatusCode};
 
-
-/// Получить список всех пользователей
+/// Получить jwt
 #[utoipa::path(
-    get,
+    post,
     path = "/auth",
     tag = "Auth",
     request_body(
@@ -22,9 +16,7 @@ use crate::services::auth;
         content_type = "application/json",
         examples(
             ("Иван" = (summary = "Пример пользователя",
-                value = json!({"email": "ivan@example.com"}))),
-            ("Анна" = (summary = "Другой пример",
-                value = json!({"email": "anna@example.com"})))
+                value = json!({"email": "ivan@example.com"})))
         )
     ),
     responses(
@@ -44,7 +36,7 @@ use crate::services::auth;
 )]
 pub async fn loging_fn(
     State(state): State<SessionState>,
-    Json(dto): Json<dto::LogIn>
-) -> Result<Json<dto::LogInResponse>, StatusCode> {
-    auth::login(state,dto.email).await
+    Json(dto): Json<dto::LogIn>,
+) -> Result<(StatusCode, Json<dto::LogInResponse>), ApiError> {
+    auth::login(state, dto.email).await
 }
