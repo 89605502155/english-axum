@@ -1,3 +1,4 @@
+use crate::extracts::auth as extr;
 use crate::models::error;
 use crate::models::user as user_model;
 use crate::services::user;
@@ -91,8 +92,10 @@ pub async fn create_user(
     )
 )]
 pub async fn delete_user(
+    extr::AuthUser(user_id): extr::AuthUser,
     State(state): State<SessionState>,
     Path(id): Path<i32>,
 ) -> Result<StatusCode, error::ApiError> {
+    println!("user id {user_id}");
     user::delete_user(state, id).await
 }

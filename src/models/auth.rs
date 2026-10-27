@@ -14,12 +14,13 @@ pub struct LogIn {
 #[derive(Serialize, ToSchema)]
 #[schema(example = json!({"token": "djishjvjk.diosfsd.fdguifduhi"}))]
 pub struct LogInResponse {
-    pub token: String
+    pub token: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
     pub sub: String,
-    pub exp: usize,
+    pub id: i32,
     pub email: String,
+    pub exp: usize,
 }
