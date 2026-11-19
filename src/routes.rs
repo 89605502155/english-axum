@@ -39,7 +39,7 @@ impl Modify for SecurityAddon {
     ),
     modifiers(&SecurityAddon),
     paths(check::root, handler_user::users_list, handler_user::create_user, handler_user::delete_user,auth::loging_fn),
-    components(schemas(model_user::User, model_user::UserPayLoad, error::ErrorResponse, dto_auth::LogIn, dto_auth::LogInResponse)),
+    components(schemas(model_user::User, model_user::UserPayLoad, error::ErrorResponse, dto_auth::LogIn, dto_auth::TokenJsonBody)),
     tags(
         (name = "Start", description = "Проверка доступности сервиса"),
         (name = "Users", description = "CRUD операции над пользователями"),

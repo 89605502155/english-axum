@@ -13,7 +13,7 @@ pub struct LogIn {
 /// Данные для создания пользователя
 #[derive(Serialize, ToSchema)]
 #[schema(example = json!({"token": "djishjvjk.diosfsd.fdguifduhi"}))]
-pub struct LogInResponse {
+pub struct TokenJsonBody {
     pub token: String,
 }
 

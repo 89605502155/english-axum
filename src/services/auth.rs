@@ -8,7 +8,7 @@ use jsonwebtoken::{self, EncodingKey, Header, encode};
 pub async fn login(
     state: SessionState,
     email: String,
-) -> Result<(StatusCode, Json<dto::LogInResponse>), ApiError> {
+) -> Result<(StatusCode, Json<dto::TokenJsonBody>), ApiError> {
     let id = repositry::get_by_email(&state.db, &email).await?;
     match id {
         Some(id) => generate_token(state, &email, id),
@@ -20,7 +20,7 @@ fn generate_token(
     state: SessionState,
     email: &str,
     id: i32,
-) -> Result<(StatusCode, Json<dto::LogInResponse>), ApiError> {
+) -> Result<(StatusCode, Json<dto::TokenJsonBody>), ApiError> {
     let claims = dto::Claims {
         sub: id.to_string(),
         id: id,
@@ -44,5 +44,5 @@ fn generate_token(
         "JWT claims JSON: {}",
         serde_json::to_string(&claims).unwrap()
     );
-    Ok((StatusCode::OK, Json(dto::LogInResponse { token })))
+    Ok((StatusCode::OK, Json(dto::TokenJsonBody { token })))
 }
