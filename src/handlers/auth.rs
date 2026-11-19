@@ -25,7 +25,8 @@ use axum::{Json, extract::State, http::StatusCode};
                 ("Ok" = (
                     summary = "Обычный ответ",
                     value = json!({
-                        "token": "sdfsdfsd.asdfdsaf.asdfasdf"
+                        "token": "sdfsdfsd.asdfdsaf.asdfasdf",
+                        "refresh": "sdfsdfsdfwevwegwegewgew"
                     })
                 ))
             )
@@ -41,10 +42,10 @@ pub async fn loging_fn(
     auth::login(state, dto.email).await
 }
 
-/// Получить jwt
+/// обновить jwt по рефреш
 #[utoipa::path(
-    post,
-    path = "/auth",
+    patch,
+    path = "/refresh",
     tag = "Auth",
     request_body(
         content = dto::LogIn,

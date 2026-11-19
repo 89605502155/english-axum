@@ -15,6 +15,7 @@ pub struct LogIn {
 #[schema(example = json!({"token": "djishjvjk.diosfsd.fdguifduhi"}))]
 pub struct TokenJsonBody {
     pub token: String,
+    pub refresh: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

@@ -11,12 +11,12 @@ pub async fn login(
 ) -> Result<(StatusCode, Json<dto::TokenJsonBody>), ApiError> {
     let id = repositry::get_by_email(&state.db, &email).await?;
     match id {
-        Some(id) => generate_token(state, &email, id),
+        Some(id) => generate_token_login(state, &email, id),
         None => Err(api_error(StatusCode::NOT_FOUND, "hjhjhj")),
     }
 }
 
-fn generate_token(
+fn generate_token_login(
     state: SessionState,
     email: &str,
     id: i32,
@@ -40,9 +40,10 @@ fn generate_token(
             return Err(api_error(StatusCode::INTERNAL_SERVER_ERROR, "500 ERROR"));
         }
     };
+    let refresh = token.clone().to_string()+".sdfsdfsd";
     println!(
         "JWT claims JSON: {}",
         serde_json::to_string(&claims).unwrap()
     );
-    Ok((StatusCode::OK, Json(dto::TokenJsonBody { token })))
+    Ok((StatusCode::OK, Json(dto::TokenJsonBody { token: token,  refresh: refresh })))
 }

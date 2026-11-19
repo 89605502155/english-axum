@@ -51,3 +51,43 @@ pub async fn get_by_email(
     .await
     .map_err(db_error)
 }
+
+pub async fn save_refresh_token(
+    pool: &PgPool,
+    token: &str,
+    user_id: i32
+) -> Result<StatusCode, ApiError> {
+    sqlx::query(
+        "INSERT INTO refresh_tokens (token, user) VALUES ($1, $2)"
+    )
+    .bind(token)
+    .bind(user_id)
+    .fetch_one(&pool)
+    .map_err(db_error)
+}
+
+pub async fn return_user_id_by_token(
+    pool: &PgPool,
+    token: &str
+) -> Result<Option<i32>, ApiError> {
+    sqlx::query_scalar::<_, i32>(
+        "SELECT user FROM refresh_tokens WHERE token = $1 LIMIT 1"
+    )
+    .bind(token)
+    .fetch_optional(&pool)
+    .await
+    .map_err(db_error)
+}
+
+pub async fn delete_refresh_token(
+    pool: &PgPool,
+    token: &str
+) -> Result<PgQueryResult, ApiError> {
+    sqlx::query(
+        "DELETE FROM refresh_tokens WHERE token = $1"
+    )
+    .bind(token)
+    .execute(&pool)
+    .await
+    .map_err(db_error)
+}
